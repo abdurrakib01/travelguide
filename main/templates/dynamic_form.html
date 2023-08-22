@@ -1,0 +1,20 @@
+<form hx-post="{% url 'dynamic_feature' s_id %}" class="mt-5"
+    hx-trigger="click from:#submit_all">
+    {% csrf_token %} 
+    <div class="form-row">
+        <div class="name">{{feature_form.sf_title.label}}</div>
+        <div class="value">
+            <div class="input-group">
+                {{feature_form.sf_title}}
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="name">{{feature_form.sf_description.label}}</div>
+        <div class="value">
+            <div class="input-group">
+                {{feature_form.sf_description}}
+            </div>
+        </div>
+    </div>
+</form>

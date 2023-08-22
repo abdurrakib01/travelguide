@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Location Details{% endblock title %}
+{% block content %}
+<div class="m-5 d-flex flex-column">
+    <div class="d-flex m-5">
+        <img class="col-5" src="{{ location.image.url}}"/>
+        <div class="d-flex flex-column m-5">
+            <p>{{location.l_name}}</p>
+            <p>{{location.l_tagline}}</p>
+            <ul>
+                {% for des in l_des %}
+                    <li>{{des}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="m-5 text-center">
+    <p>{{location.l_summery}}</p>
+</div>
+{% for season in  seasons%}
+<div class="d-flex m-5">
+    <div class="w-50">
+        <p>{{season.s_tagline}}</p>
+        <p class="fs-3 fw-bold">{{season.s_name}}</p>
+        <p>{{season.s_description}}</p>
+    </div>
+    <div class="m-5 w-50">
+    {% for feature in features %}
+        {% if feature.season == season %}
+        <p class="fs-5 fw-bold">{{feature.sf_title}}</p>
+        {% endif %}
+    {% endfor %}
+    </div>
+</div>
+{% endfor %}
+<div class="m-5">
+    <a href="{% url 'create_season' location.id%}" class="btn btn-success">+ Add Season</a>
+</div>
+{% endblock content %}

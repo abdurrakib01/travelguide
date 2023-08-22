@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Location{% endblock title %}
+{% block head %}
+<link href="{% static 'css/main.css' %}" rel="stylesheet" media="all">
+{% endblock head %}
+{% block content %}
+<div class="mx-auto d-flex justify-content-center">
+    <form method="post" enctype="multipart/form-data" class="mt-5 w-75">
+        {% csrf_token %}
+        <div class="form-row">
+            <p class="fs-2 fw-bold">Season</p>
+        </div>
+        {% for field in season_form %}
+        <div class="form-row">
+            <div class="name">{{field.label_tag}}</div>
+            <div class="value mt-2">
+                <div class="input-group js-input-file">
+                    {{field}}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-success mb-5 mt-3">Next >></button>
+        </div>
+        {% if form.non_field_errors %}
+            {% for err in form.non_field_errors %}
+                <p>{{err}}</p>
+            {% endfor %}
+        {% endif %}
+    </form>
+</div>
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'js/global.js' %}"></script>
+{% endblock content%}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Feature{% endblock title %}
+{% block head %}
+<link href="{% static 'css/main.css' %}" rel="stylesheet" media="all">
+{% endblock head %}
+{% block content %}
+<div class="mx-auto d-flex justify-content-center flex-column w-75">
+    <div id="feature-form">
+        {% include 'dynamic_form.html' %}
+    </div>
+    <div class="my-4">
+        <button type="button" class="btn btn-success me-2"
+        hx-get="{% url 'dynamic_feature' s_id%}"
+        hx-target="#feature-form"
+        hx-swap="beforeend">+ Add Feature</button>
+        <button type="button" class="btn btn-primary me-2" id="submit_all">Submit All</button>
+    </div>
+</div>
+<script src="https://unpkg.com/htmx.org@1.9.4"></script>
+{% endblock content%}
