@@ -27,20 +27,35 @@ def location_details_view(request, pk):
 @login_required
 def submit_location(request):
     if request.method == 'POST':
-        form = LocationForm(request.POST, request.FILES)
+        form = LocationForm(request.POST, request.FILES or None)
+        selected_values_str = request.POST.get('selected_values', '')
+        tags = selected_values_str.split(',')
         if form.is_valid():
-            location = form.save()
+            image = form.cleaned_data['image']
+            name = form.cleaned_data['l_name']
+            tagline = form.cleaned_data['l_tagline']
+            summary = form.cleaned_data['l_summery']
+            des = form.cleaned_data['l_description']
+            location = Location.objects.create(
+                image = image,
+                l_name = name,
+                l_tagline = tagline,
+                l_summery = summary,
+                l_description = des,
+            )
+            for tag_name in tags:
+                tag, _ =Tag.objects.get_or_create(name=tag_name)
+                location.tags.add(tag)
             return redirect('create_season', l_id = location.id)
     else:
         form = LocationForm()
-        common_tag = Location.tags.most_common()[:6]
-        context = {'location_form' : form, 'tags' : common_tag}
+        tags = Tag.objects.all()
+        context = {'location_form' : form, 'tags' : tags}
         return render(request, 'location_form.html', context)
 
 @login_required
 def filter_by_tag(request, tag_id):
     tags = Tag.objects.all()
-    tag = Tag.objects.get(pk=tag_id)
     location = Location.objects.filter(tags=tag_id)
     print(location)
     context = {

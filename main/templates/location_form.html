@@ -5,35 +5,106 @@
 <link href="{% static 'css/main.css' %}" rel="stylesheet" media="all">
 {% endblock head %}
 {% block content %}
-<div class="mx-auto d-flex justify-content-center">
-    <form method="post" enctype="multipart/form-data" class="mt-5 w-75">
+<div>
+    <form method="post" enctype="multipart/form-data" class="mt-5 d-flex" id="myForm">
         {% csrf_token %}
-        {% for field in location_form %}
-        <div class="form-row">
-            <div class="name">{{field.label_tag}}</div>
-            <div class="value mt-2">
-                <div class="input-group js-input-file">
-                    {{field}}
+        <div class="py-2 my-5" style="margin-left:20px; width:250px">
+            <p class="fs-6 fw-bold mx-5">Tags:</p>
+            {% for tag in tags %}
+            <div class="d-flex mx-5 align-items-conter mt-1">
+                <input class="mt-1 me-2"
+                    style = "width:12px; height:12px;"
+                type="checkbox" id="{{tag.id}}" name="{{tag.name}}" value="{{tag.name}}">
+                <label class="fs-9" for="{{tag.id}}">{{tag.name}}</label>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-8">
+            {% for field in location_form %}
+            <div class="form-row">
+                <div class="name">{{field.label_tag}}</div>
+                <div class="value mt-2">
+                    <div class="input-group js-input-file">
+                        {{field}}
+                    </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
-        <div class="d-flex py-2 my-3 bg-secondary text-white">
-            <p class="fs-6 fw-bold mx-5 me-5">Common Tags:</p>
-            {% for tag in tags %}
-            <p class="mx-2 fs-6 border border-danger bg-primary px-4">{{tag.name}}</p>
             {% endfor %}
+            {% comment %} <div class="d-flex py-2 my-3 bg-secondary text-white">
+                <p class="fs-6 fw-bold mx-5 me-5">Common Tags:</p>
+                {% for tag in tags %}
+                <p class="mx-2 fs-6 border border-danger bg-primary px-4">{{tag.name}}</p>
+                {% endfor %}
+            </div> {% endcomment %}
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-success mb-5 mt-3" id="submitBtn">Next >></button>
+            </div>
+            {% if form.non_field_errors %}
+                {% for err in form.non_field_errors %}
+                    <p>{{err}}</p>
+                {% endfor %}
+            {% endif %}
         </div>
-        <div class="d-flex justify-content-center">
-            <button type="submit" class="btn btn-success mb-5 mt-3">Next >></button>
-        </div>
-        {% if form.non_field_errors %}
-            {% for err in form.non_field_errors %}
-                <p>{{err}}</p>
-            {% endfor %}
-        {% endif %}
     </form>
 </div>
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'js/global.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const submitBtn = document.getElementById("submitBtn");
+      const form = document.getElementById("myForm");
+  
+      submitBtn.addEventListener("click", function() {
+        const selectedCheckboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedValues = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+        const selectedValuesStr = selectedValues.join(",");
+        
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "selected_values";
+        hiddenInput.value = selectedValuesStr;
+  
+        form.appendChild(hiddenInput);
+  
+        // Form submission remains the same
+        form.submit();
+      });
+    });
+  </script>
 {% endblock content %}
+
+{% comment %} <form method="post" id="myForm">
+    {% csrf_token %}
+  
+    <label><input type="checkbox" name="selected_values" value="value1"> Value 1</label><br>
+    <label><input type="checkbox" name="selected_values" value="value2"> Value 2</label><br>
+    <!-- Add more checkboxes as needed -->
+  
+    <label for="other_field">Other Field:</label>
+    <input type="text" id="other_field" name="other_field"><br>
+  
+    <button type="button" id="submitBtn">Submit</button>
+  </form>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const submitBtn = document.getElementById("submitBtn");
+      const form = document.getElementById("myForm");
+  
+      submitBtn.addEventListener("click", function() {
+        const selectedCheckboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedValues = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+        const selectedValuesStr = selectedValues.join(",");
+        
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "selected_values";
+        hiddenInput.value = selectedValuesStr;
+  
+        form.appendChild(hiddenInput);
+  
+        // Form submission remains the same
+        form.submit();
+      });
+    });
+  </script> {% endcomment %}
