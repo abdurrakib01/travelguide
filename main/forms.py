@@ -9,12 +9,15 @@ class LocationForm(forms.ModelForm):
             'l_tagline',
             'l_description',
             'l_summery',
+            'tags'
         ]
         widgets = {
             'l_name' : forms.TextInput(attrs={"class": "form-control"}),
             'l_tagline' : forms.TextInput(attrs={"class": "form-control"}),
             'l_summery' : forms.Textarea(attrs={"class": "form-control"}),
             'l_description' : forms.Textarea(attrs={"class": "form-control"}),
+            'tags' : forms.TextInput(attrs={"class": "form-control", "data-role":"tagsinput",
+                        "placeholder":"A comma-separated list of tags"}),
         }
 
 class FeatureForm(forms.ModelForm):

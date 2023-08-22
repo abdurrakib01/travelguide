@@ -4,14 +4,17 @@ from .forms import LocationForm, SeasonForm, FeatureForm
 from .models import Location, Season, Feature
 from django.contrib.auth.decorators import login_required
 from django_htmx.http import HttpResponseClientRedirect
+from taggit.models import Tag
 # Create your views here.
 
+@login_required
 def view_all_location(request):
     locations = Location.objects.all()
-    context = {'locations':locations}
+    tags = Tag.objects.all()
+    context = {'locations':locations, 'tags':tags}
     return render(request, "home.html", context)
 
-
+@login_required
 def location_details_view(request, pk):
     location = Location.objects.get(pk=pk)
     seasons = location.season_set.all()
@@ -21,7 +24,7 @@ def location_details_view(request, pk):
     context = {'location': location, 'seasons':seasons, 'features':features, 'l_des':l_des}
     return render(request, "location_details.html", context)
 
-
+@login_required
 def submit_location(request):
     if request.method == 'POST':
         form = LocationForm(request.POST, request.FILES)
@@ -30,9 +33,23 @@ def submit_location(request):
             return redirect('create_season', l_id = location.id)
     else:
         form = LocationForm()
-        context = {'location_form' : form}
+        common_tag = Location.tags.most_common()[:6]
+        context = {'location_form' : form, 'tags' : common_tag}
         return render(request, 'location_form.html', context)
 
+@login_required
+def filter_by_tag(request, tag_id):
+    tags = Tag.objects.all()
+    tag = Tag.objects.get(pk=tag_id)
+    location = Location.objects.filter(tags=tag_id)
+    print(location)
+    context = {
+        'locations':location,
+        'tags':tags
+    }
+    return render(request, "home.html", context)
+
+@login_required
 def season(request, l_id):
     if request.method == "POST":
         location_id = l_id
@@ -55,10 +72,12 @@ def season(request, l_id):
         context = {'season_form' : s_form}
         return render(request, 'season_form.html', context)
 
+@login_required
 def create_feature(request, s_id):
     context = {'feature_form': FeatureForm, 's_id':s_id}
     return render(request, 'feature_form.html', context)
 
+@login_required
 def dynamic_feature(request, s_id):
     if request.method == "POST":
         form = FeatureForm(request.POST)

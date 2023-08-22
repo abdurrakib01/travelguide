@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from taggit.managers import TaggableManager
 # Create your models here.
 
 class Location(models.Model):
@@ -8,6 +9,7 @@ class Location(models.Model):
     l_tagline = models.CharField(_("Hotel Tagline"), max_length=150)
     l_summery = models.TextField(_("Hotel Summary"), max_length=300)
     l_description = models.TextField(_("Hotel Description"), max_length=200)
+    tags = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
